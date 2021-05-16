@@ -158,26 +158,7 @@ class searchteacher(ListAPIView):
             
     # return JsonResponse({'message':'all students data deleted'},status=status.HTTP_204_NO_CONTENT)
 
-
-
-
-# @api_view(['GET'])
-# def studentbyname(request,s_name):
-#     print(s_name)
-#     try:
-#         studentname=studentsdetail.objects.get(s_name=s_name)
-#         if request.method == 'GET':
-#             studentnam=studentsdetailSerializer(studentname)
-#             return JsonResponse(studentnam.data)
-#     except:
-#         return JsonResponse({'message':'The student not found'},status=status.HTTP_404_NOT_FOUND)
    
-    
-
-
-
-
-
 
 
 def home(request):
