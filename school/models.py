@@ -26,6 +26,7 @@ class yearclass(models.Model):
 class months(models.Model):
     years = models.ForeignKey(yearclass,on_delete=models.CASCADE)
     student = models.ForeignKey(studentsdetail,on_delete=models.CASCADE)
+    teacher = models.ForeignKey(teacherdetail,on_delete=models.CASCADE)
     january = models.PositiveSmallIntegerField()
     february = models.PositiveSmallIntegerField()
     march = models.PositiveSmallIntegerField()
