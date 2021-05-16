@@ -26,7 +26,16 @@ urlpatterns = [
     path('admin/', admin.site.urls),
    # path('', include(router.urls)),
     path('', views.studentslist),
+    path('delete/<int:pk>', views.studentdetail),
+    # path('search/<str:s_name>',views.studentbyname),
+     path('search/',views.sear.as_view()),
+     path('year',views.yearview),
+     path('months/<str:nam>',views.monthsview),
+     path('paymonth/<str:nam>/<int:yerr>',views.updateview),
+     path('teacher',views.teacheroverall),
+     path('searchteacher/',views.searchteacher.as_view())
+    
     
     
 ]
-#urlpatterns = format_suffix_patterns(urlpatterns)
+urlpatterns = format_suffix_patterns(urlpatterns)
