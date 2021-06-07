@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import studentsdetail,yearclass,months,teacherdetail
+from .models import studentsdetail,yearclass,months,teacherdetail,teachpaymonths
 from .serializers import studentsdetailSerializer,yearsSerializer,monthsSerializer,teacherdetailSerializer
 from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view
@@ -14,6 +14,12 @@ from rest_framework.generics import ListAPIView
 from rest_framework import generics
 # from rest_framework.filters import SearchFilter
 from rest_framework.filters import SearchFilter
+
+
+# from rest_framework.decorators import api_view, permission_classes
+# from rest_framework.permissions import IsAuthenticated
+# from rest_framework.response import Response
+
 
 @api_view(['GET', 'POST', 'DELETE'])
 def studentslist(request):
@@ -88,7 +94,7 @@ def yearview(request):
     elif request.method == 'DELETE':      
                 yearclass.objects.all().delete()  
             
-    return JsonResponse({'message':'all students data deleted'},status=status.HTTP_204_NO_CONTENT)
+    return JsonResponse({'message':'all years cleared'},status=status.HTTP_204_NO_CONTENT)
     
     
 @api_view(['GET'])
@@ -96,50 +102,41 @@ def monthsview(request,nam):
     if request.method == 'GET':
         monthss = months.objects.filter(student__s_name=nam)
         month_serializer = monthsSerializer(monthss, many=True)
+        
         return JsonResponse(month_serializer.data, safe=False)
         # 'safe=False' for objects serialization
 
 
 
 @api_view(['POST'])
-def updateview(request,nam,yerr):
-    monthss = months.objects.get(student__s_name=nam,years__year=yerr)
+def updateview(request,roll,yerr):
     if request.method == 'POST':
+        monthss = studentsdetail.objects.get(rollnbr=roll)
+        yearr = yearclass.objects.get(year=yerr)
         data_month = JSONParser().parse(request)
-        month_serializer = monthsSerializer(monthss, data=data_month, partial=True)
-        if month_serializer.is_valid():
-            month_serializer.save()
-            return JsonResponse(month_serializer.data,status=status.HTTP_201_CREATED)
-        else:
-            return JsonResponse(month_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            
-    return JsonResponse({'message': 'The Student does not exist'}, status=status.HTTP_404_NOT_FOUND)
-    
-@api_view(['GET','POST'])
-def teacheroverall(request):
-    if request.method == 'GET':
-        allteacherdetail = teacherdetail.objects.filter()
-        allteacherserializer = teacherdetailSerializer(allteacherdetail,many=True)
-        return JsonResponse(allteacherserializer.data,safe=False)
-    elif request.method == 'POST':
-        teacherpostdata = JSONParser().parse(request)
-        postserializer = teacherdetailSerializer(data=teacherpostdata)
-        if postserializer.is_valid():
-            postserializer.save()
-            return JsonResponse(postserializer.data,status=status.HTTP_201_CREATED)
-        else:
-            return JsonResponse({'message': 'invalid entry'},status=status.HTTP_400_BAD_REQUEST)
+        try:
+            monthss = months.objects.get(student__rollnbr=roll,years__year=yerr)
+            month_serializer = monthsSerializer(monthss, data=data_month, partial=True)
+            if month_serializer.is_valid():
+                month_serializer.save()
+                return JsonResponse(month_serializer.data,status=status.HTTP_201_CREATED)
+            else:
+                return JsonResponse(month_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except months.DoesNotExist:
+            ins = months(student=monthss,years=yearr)
+            ins.save()
+            monthss = months.objects.get(student__s_name=nam,years__year=yerr)
+            month_serializer = monthsSerializer(monthss,data=data_month, partial=True)
+            if month_serializer.is_valid():
+                month_serializer.save()
+                return JsonResponse(month_serializer.data,status=status.HTTP_201_CREATED)
+            else:
+                return JsonResponse(month_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-class searchteacher(ListAPIView):
-        queryset=teacherdetail.objects.all()
-        serializer_class=teacherdetailSerializer
-        filter_backends=[SearchFilter]
-        search_fields=['t_name','t_fname','s_email','m_number','sex']
-   
+              
+    #return JsonResponse({'message': 'The Student does not exist'}, status=status.HTTP_404_NOT_FOUND)
     
-   
-   
+
    
     # elif request.method == 'POST':
     #     month_data = JSONParser().parse(request)

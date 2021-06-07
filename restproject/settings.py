@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'school.apps.SchoolConfig',
     'corsheaders',
     'django_filters',
+    'knox',
     
     
     
@@ -145,3 +146,13 @@ CORS_ORIGIN_WHITELIST = [
     
     
 ]
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+        'knox.auth.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ]
+}

@@ -2,6 +2,7 @@ from django.db import models
 
 # Create your models here.
 class studentsdetail(models.Model):
+    rollnbr = models.BigAutoField(primary_key=True)
     s_name = models.CharField(max_length=50)
     s_fname = models.CharField(max_length=50)
     dob = models.DateField()
@@ -26,19 +27,18 @@ class yearclass(models.Model):
 class months(models.Model):
     years = models.ForeignKey(yearclass,on_delete=models.CASCADE)
     student = models.ForeignKey(studentsdetail,on_delete=models.CASCADE)
-    teacher = models.ForeignKey(teacherdetail,on_delete=models.CASCADE)
-    january = models.PositiveSmallIntegerField()
-    february = models.PositiveSmallIntegerField()
-    march = models.PositiveSmallIntegerField()
-    april = models.PositiveSmallIntegerField()
-    may = models.PositiveSmallIntegerField()
-    june = models.PositiveSmallIntegerField()
-    july = models.PositiveSmallIntegerField()
-    august = models.PositiveSmallIntegerField()
-    september = models.PositiveSmallIntegerField()
-    october = models.PositiveSmallIntegerField()
-    november = models.PositiveSmallIntegerField()
-    december = models.PositiveSmallIntegerField()
+    january = models.PositiveSmallIntegerField(blank=True,null=True,default=0)
+    february = models.PositiveSmallIntegerField(blank=True,null=True,default=0)
+    march = models.PositiveSmallIntegerField(blank=True,null=True,default=0)
+    april = models.PositiveSmallIntegerField(blank=True,null=True,default=0)
+    may = models.PositiveSmallIntegerField(blank=True,null=True,default=0)
+    june = models.PositiveSmallIntegerField(blank=True,null=True,default=0)
+    july = models.PositiveSmallIntegerField(blank=True,null=True,default=0)
+    august = models.PositiveSmallIntegerField(blank=True,null=True,default=0)
+    september = models.PositiveSmallIntegerField(blank=True,null=True,default=0)
+    october = models.PositiveSmallIntegerField(blank=True,null=True,default=0)
+    november = models.PositiveSmallIntegerField(blank=True,null=True,default=0)
+    december = models.PositiveSmallIntegerField(blank=True,null=True,default=0)
     
     def __str__(self):
         return str(self.student)
@@ -58,3 +58,38 @@ class teacherdetail(models.Model):
     speciality = models.CharField(max_length=200)
     def __str__(self):
         return str(self.t_name)
+
+class teachpaymonths(models.Model):
+    years = models.ForeignKey(yearclass,on_delete=models.DO_NOTHING)
+    teacher = models.ForeignKey(teacherdetail,on_delete=models.CASCADE)
+    january = models.PositiveSmallIntegerField(blank=True,null=True)
+    february = models.PositiveSmallIntegerField(blank=True,null=True)
+    march = models.PositiveSmallIntegerField(blank=True,null=True)
+    april = models.PositiveSmallIntegerField(blank=True,null=True)
+    may = models.PositiveSmallIntegerField(blank=True,null=True)
+    june = models.PositiveSmallIntegerField(blank=True,null=True)
+    july = models.PositiveSmallIntegerField(blank=True,null=True)
+    august = models.PositiveSmallIntegerField(blank=True,null=True)
+    september = models.PositiveSmallIntegerField(blank=True,null=True)
+    october = models.PositiveSmallIntegerField(blank=True,null=True)
+    november = models.PositiveSmallIntegerField(blank=True,null=True)
+    december = models.PositiveSmallIntegerField(blank=True,null=True)
+
+
+class schoolclasses(models.Model):
+    standardname = models.CharField(max_length=100)
+    def __str__(self):
+        return self.standardname
+class subjects(models.Model):
+    subjectname = models.CharField(max_length=100)
+    def __str__(self):
+        return self.subjectname
+class marks(models.Model):
+    years = models.ForeignKey(yearclass,on_delete=models.DO_NOTHING)
+    standard = models.ForeignKey(schoolclasses,on_delete=models.DO_NOTHING)
+    subjectname = models.ForeignKey(subjects,on_delete=models.DO_NOTHING)
+    student = models.ForeignKey(studentsdetail,on_delete=models.CASCADE)
+    subjectmarks = models.PositiveSmallIntegerField()
+    def __str__(self):
+        return str(self.student)
+   
