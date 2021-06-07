@@ -95,7 +95,6 @@ def yearview(request):
 def monthsview(request,nam):
     if request.method == 'GET':
         monthss = months.objects.filter(student__s_name=nam)
-        print(monthss)
         month_serializer = monthsSerializer(monthss, many=True)
         return JsonResponse(month_serializer.data, safe=False)
         # 'safe=False' for objects serialization
@@ -138,8 +137,7 @@ class searchteacher(ListAPIView):
         filter_backends=[SearchFilter]
         search_fields=['t_name','t_fname','s_email','m_number','sex']
    
-   
-   
+    
    
    
    
@@ -157,7 +155,7 @@ class searchteacher(ListAPIView):
     #            months.objects.all().delete()  
             
     # return JsonResponse({'message':'all students data deleted'},status=status.HTTP_204_NO_CONTENT)
-
+    #this is test for github commit
    
 
 
