@@ -41,25 +41,21 @@ class searchteacher(ListAPIView):
         search_fields=['t_name','t_fname','s_email','m_number','sex']
    
 @api_view(['GET'])
-def teacherpaymentview(request,tnam):
+def teacherpaymentview(request,pk,year):
     if request.method == 'GET':
-        monthss = teachpaymonths.objects.filter(teacher__t_name=tnam)
+        monthss = teachpaymonths.objects.filter(teacher__pk=pk,years__year=year)
     
         month_serializer = t_paymentSerializer(monthss ,many=True)
         return JsonResponse(month_serializer.data, safe=False)   
    
 @api_view(['POST'])
-def updateteacherpayments(request,tnam,tyear,pk):
+def updateteacherpayments(request,tyear,pk):
     if request.method == 'POST':
-        if tnam != 'null':
-            tmonthss = teacherdetail.objects.get(t_name=tnam)
+        tmonthss = teacherdetail.objects.get(pk=pk)
         yearr = yearclass.objects.get(year=tyear)
         data_month = JSONParser().parse(request)
         try:
-            if pk != 0:
-                monthss = teachpaymonths.objects.get(teacher__pk=pk,years__year=tyear)
-            else:
-                    monthss = teachpaymonths.objects.get(teacher__t_name=tnam,years__year=tyear)
+            monthss = teachpaymonths.objects.get(teacher__pk=pk,years__year=tyear)
             tmonth_serializer = t_paymentSerializer(monthss, data=data_month, partial=True)
             if tmonth_serializer.is_valid():
                 tmonth_serializer.save()
@@ -69,7 +65,7 @@ def updateteacherpayments(request,tnam,tyear,pk):
         except teachpaymonths.DoesNotExist:
             ins = teachpaymonths(teacher=tmonthss,years=yearr)
             ins.save()
-            monthss = teachpaymonths.objects.get(teacher__t_name=tnam,years__year=tyear)
+            monthss = teachpaymonths.objects.get(teacher__pk=pk,years__year=tyear)
             tmonth_serializer = t_paymentSerializer(monthss,data=data_month, partial=True)
             if tmonth_serializer.is_valid():
                 tmonth_serializer.save()

@@ -3,6 +3,9 @@ from rest_framework.response import Response
 from knox.models import AuthToken
 from .serializers import UserSerializer, RegisterSerializer
 from django.contrib.auth import login
+from django.http.response import JsonResponse
+from rest_framework.decorators import api_view
+from knox.models import AuthToken
 
 
 from rest_framework.authtoken.serializers import AuthTokenSerializer
@@ -31,3 +34,4 @@ class LoginAPI(KnoxLoginView):
         user = serializer.validated_data['user']
         login(request, user)
         return super(LoginAPI, self).post(request, format=None)
+        

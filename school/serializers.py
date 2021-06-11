@@ -22,6 +22,10 @@ class monthsSerializer(serializers.ModelSerializer):
         fields = '__all__'
         # fields = ['january','february','march','april','may','june','july','august','october','september'
         # ,'november','december','student']
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['student'] = studentsdetailSerializer(instance.student).data
+        return rep
 
 class teacherdetailSerializer(serializers.ModelSerializer):
     class Meta:
@@ -44,6 +48,7 @@ class studentsresultSerializer(serializers.ModelSerializer):
         rep = super().to_representation(instance)
         rep['standard'] = standardSerializer(instance.standard).data 
         rep['subjectname'] = subjectsSerializer(instance.subjectname).data
+        rep['student'] = studentsdetailSerializer(instance.student).data
         return rep
 
     # def to_representation(self, instance):

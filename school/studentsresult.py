@@ -65,19 +65,5 @@ def getstandards(request):
         return JsonResponse(standards.data,safe=False)
 
 
-@api_view(['GET'])
-def getstandardsbyid(request):
-    if request.method == 'GET':
-        allstandards = schoolclasses.objects.all()
-        standards = standardSerializer(allstandards,many= True)
-        return JsonResponse(standards.data,safe=False)
-
-@api_view(['GET'])
-def getsubjectsbyid(request,pk):
-    if request.method == 'GET':
-        allsubjects = subjects.objects.get(pk)
-        subjectserializer = subjectsSerializer(allsubjects,many= True)
-        return JsonResponse(subjectserializer.data,safe=False)
-
     
 
