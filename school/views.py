@@ -98,9 +98,9 @@ def yearview(request):
     
     
 @api_view(['GET'])
-def monthsview(request,nam):
+def monthsview(request,roll):
     if request.method == 'GET':
-        monthss = months.objects.filter(student__s_name=nam)
+        monthss = months.objects.filter(student__rollnbr=roll)
         month_serializer = monthsSerializer(monthss, many=True)
         
         return JsonResponse(month_serializer.data, safe=False)
@@ -125,7 +125,7 @@ def updateview(request,roll,yerr):
         except months.DoesNotExist:
             ins = months(student=monthss,years=yearr)
             ins.save()
-            monthss = months.objects.get(student__s_name=nam,years__year=yerr)
+            monthss = months.objects.get(student__rollnbr=roll,years__year=yerr)
             month_serializer = monthsSerializer(monthss,data=data_month, partial=True)
             if month_serializer.is_valid():
                 month_serializer.save()

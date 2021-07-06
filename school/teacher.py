@@ -13,12 +13,17 @@ from rest_framework import generics
 from rest_framework.filters import SearchFilter
 
 
-@api_view(['GET','POST'])
+@api_view(['GET','POST','DELETE'])
 def teacheroverall(request):
     if request.method == 'GET':
-        allteacherdetail = teacherdetail.objects.filter()
-        allteacherserializer = teacherdetailSerializer(allteacherdetail,many=True)
-        return JsonResponse(allteacherserializer.data,safe=False)
+        allstudents = teacherdetail.objects.all()
+        
+        # title = request.query_params.get('s_name', None)
+        # if title is not None:
+        #     allstudents = allstudents.filter(title__icontains=title)
+        
+        allstudents_serializer = teacherdetailSerializer(allstudents, many=True)
+        return JsonResponse(allstudents_serializer.data,safe = False)
     elif request.method == 'POST':
         teacherpostdata = JSONParser().parse(request)
         postserializer = teacherdetailSerializer(data=teacherpostdata)
@@ -34,6 +39,12 @@ def teacheroverall(request):
     return JsonResponse({'message':'all students data deleted'},status=status.HTTP_204_NO_CONTENT)
 
 
+@api_view(['DELETE'])
+def teacherdelete(request,pk):
+    if request.method == 'DELETE':
+        teacherdetail.objects.get(pk=pk).delete()
+        return JsonResponse({'message':'student data deleted'})
+
 class searchteacher(ListAPIView):
         queryset=teacherdetail.objects.all()
         serializer_class=teacherdetailSerializer
@@ -41,12 +52,13 @@ class searchteacher(ListAPIView):
         search_fields=['t_name','t_fname','s_email','m_number','sex']
    
 @api_view(['GET'])
-def teacherpaymentview(request,pk,year):
+def teacherpaymentview(request,pk):
     if request.method == 'GET':
-        monthss = teachpaymonths.objects.filter(teacher__pk=pk,years__year=year)
+        monthss = teachpaymonths.objects.filter(teacher__pk=pk)
     
         month_serializer = t_paymentSerializer(monthss ,many=True)
-        return JsonResponse(month_serializer.data, safe=False)   
+        return JsonResponse(month_serializer.data, safe=False)
+
    
 @api_view(['POST'])
 def updateteacherpayments(request,tyear,pk):
